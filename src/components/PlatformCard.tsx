@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Linkedin, Youtube, Video } from 'lucide-react';
+import { Facebook, Linkedin, Youtube, Video, Loader2 } from 'lucide-react';
 import type { Platform, PermissionLevel } from '../types';
 import { getGoogleAuthUrl } from '../services/googleAuth';
 import { getMetaAuthUrl } from '../services/metaAuth';
@@ -9,6 +9,7 @@ interface PlatformCardProps {
   permissionLevel: PermissionLevel;
   onConnect: () => void;
   isConnected: boolean;
+  isConnecting: boolean;
 }
 
 const platformConfig = {
@@ -38,7 +39,7 @@ const platformConfig = {
   },
 };
 
-export function PlatformCard({ platform, permissionLevel, onConnect, isConnected }: PlatformCardProps) {
+export function PlatformCard({ platform, permissionLevel, onConnect, isConnected, isConnecting }: PlatformCardProps) {
   const config = platformConfig[platform];
   const Icon = config.icon;
 
@@ -78,13 +79,17 @@ export function PlatformCard({ platform, permissionLevel, onConnect, isConnected
         </span>
         <button
           onClick={handleConnect}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
+          disabled={isConnected || isConnecting}
+          className={`px-4 py-2 rounded-md text-sm font-medium flex items-center ${
             isConnected
               ? 'bg-green-50 text-green-700 border border-green-200'
+              : isConnecting
+              ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
               : 'bg-blue-800 text-white hover:bg-blue-700'
           }`}
         >
-          {isConnected ? 'Connected' : 'Connect'}
+          {isConnecting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Connect'}
         </button>
       </div>
     </div>

@@ -31,11 +31,12 @@ export function OAuthCallback() {
             throw new Error(`Unsupported platform: ${platform}`);
         }
 
-        // Send message to parent window
+        // Send success message to parent window with connection details
         window.opener?.postMessage({
           type: 'OAUTH_SUCCESS',
           platform,
-          data: result
+          data: result,
+          timestamp: new Date().getTime()
         }, window.location.origin);
 
         // Close the popup
@@ -45,7 +46,8 @@ export function OAuthCallback() {
         window.opener?.postMessage({
           type: 'OAUTH_ERROR',
           platform,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().getTime()
         }, window.location.origin);
         window.close();
       }
